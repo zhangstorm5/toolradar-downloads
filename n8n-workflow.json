@@ -1,0 +1,93 @@
+{
+  "name": "ElevenLabs Booking to Sheets",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "options": {},
+        "path": "elevenlabs-booking",
+        "responseMode": "responseNode"
+      },
+      "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ],
+      "webhookId": "3d7f9c1e-8b2a-4e5d-9c6f-1a2b3c4d5e6f"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://script.google.com/macros/s/AKfycbwkSuGVxEZbs0BzXA2S0HkxlqfTA-5h5-x50LZ9T-c93nt02opOLkAXL9jpj0dOgWvA/exec",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ name: $json.body.name, service: $json.body.service, date: $json.body.date, time: $json.body.time, phone: $json.body.phone }) }}",
+        "options": {
+          "timeout": 30000,
+          "redirect": {
+            "redirect": {
+              "followRedirects": true,
+              "maxRedirects": 10
+            }
+          }
+        }
+      },
+      "id": "27e8e291-65f0-44d8-8031-3fdb1d0d576e",
+      "name": "Append via Apps Script Relay",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 200
+        },
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'booked', message: 'Booking saved for ' + $('Webhook').item.json.body.name + ' (' + $('Webhook').item.json.body.service + ') on ' + $('Webhook').item.json.body.date + ' at ' + $('Webhook').item.json.body.time }) }}"
+      },
+      "id": "f47ac10b-58cc-4372-a567-0e02b2c3d481",
+      "name": "Respond Booked",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        300
+      ]
+    }
+  ],
+  "pinData": null,
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Append via Apps Script Relay",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Append via Apps Script Relay": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Respond Booked",
+            "type": "main"
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
