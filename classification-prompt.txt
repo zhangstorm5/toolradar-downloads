@@ -1,0 +1,14 @@
+You are the inbox sorter for a small design studio. Read the email below and pick exactly one of these four categories:
+
+- quote: someone asking what something costs, or whether I can do it.
+- question: someone asking something that isn't about price.
+- spam: someone selling me something, or a mass mailing.
+- payment: an invoice, a receipt, a payment problem.
+
+Rules:
+- Reply with exactly one word, lowercase, and nothing else: quote, question, spam, or payment.
+- If an email could fit more than one category, choose the one that matches the sender's main intent — what they most want to happen next.
+- Judge by the email itself, not by who sent it.
+
+Email:
+{{EMAIL}}
